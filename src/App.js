@@ -1,23 +1,42 @@
-import logo from './logo.svg';
+
 import './App.css';
+import {useState} from 'react'
 
 function App() {
+  const [inputText, setInputText] = useState("");
+  const [suggestedText, setSuggestedText] = useState("");
+  const customDictionary = {
+    teh: "the",
+    wrok: "work",
+    fot: "for",
+    exampl: "example",
+  };
+  const handleInputChange = (e) => {
+    const text = e.target.value;
+    setInputText(text);
+
+    const words = text.split(" ");
+    const correctedWords = words.map((word) => {
+      const correctedWord = customDictionary[word.toLowerCase()];
+      return correctedWord || word;
+    });
+
+    const firstCorrection = correctedWords.find(
+      (word, index) => word !== words[index]
+    );
+    setSuggestedText(firstCorrection || "");
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+      <h1>Spell Check and Auto-Correction</h1>
+      <textarea placeholder='Enter text...' value={inputText} onChange={handleInputChange} rows={5}cols={40}/>
+      {suggestedText && (
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Did you mean: <strong>{suggestedText}</strong>?
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      )}
+
     </div>
   );
 }
